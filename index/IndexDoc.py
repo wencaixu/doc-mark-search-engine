@@ -6,7 +6,8 @@ import redis
 
 from tokenization.Tokenizator import tokenize
 
-r = redis.Redis(host="39.106.113.6", port=6380, password="Xwcxwj6688")
+# 此处填写个人redis服务信息
+r = redis.Redis(host="aaa", port=6380, password="aaa")
 
 
 # 建立并添加反向索引到Redis缓存
