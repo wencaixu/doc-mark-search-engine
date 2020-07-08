@@ -21,5 +21,3 @@ def index_document(connect, doc, content):
     for token in words:
         threading.Thread(target=create_reverse_index, args=(connect, token, doc)).start()
 
-
-index_document(r, doc="doc1", content=DOCUMENT_WORDS)
