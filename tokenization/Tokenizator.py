@@ -1,6 +1,6 @@
-from setting.stop_words_setting import STOP_WORDS, DOCUMENT_WORDS
+from setting.StopWordsSetting import STOP_WORDS, DOCUMENT_WORDS
 
 
-def tokenize(content):
+def tokenize():
     words = set(DOCUMENT_WORDS.lower().split(" "))
     return words - STOP_WORDS

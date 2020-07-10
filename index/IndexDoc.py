@@ -1,23 +1,33 @@
-# 建立文档单词反向索引，放入到Redis中
 import threading
 
-from setting.stop_words_setting import DOCUMENT_WORDS
-import redis
+from cache.RedisCache import Cache
 
 from tokenization.Tokenizator import tokenize
 
-# 此处填写个人redis服务信息
-r = redis.Redis(host="aaa", port=6380, password="aaa")
+r = Cache().get_redis_cache(0)
 
 
-# 建立并添加反向索引到Redis缓存
-def create_reverse_index(connect, token, doc):
-    # pipeline = r.pipeline(transaction=False)
-    connect.sadd("idx:" + token, doc)
+def create_reverse_index(r, token, doc):
+    """
+    建立反向索引并添加到缓存中
+    :param r: Redis链接
+    :param token: 分割的单词
+    :param doc:  文档名称
+    :return:
+    TODO 修改为pipeline
+    """
+    r.sadd("idx:" + token, doc)
 
 
-def index_document(connect, doc, content):
+def index_document(r, doc, content):
+    """
+    多线程建立文档索引
+    :param r:
+    :param doc:
+    :param content:
+    :return:
+    TODO 线程个数控制修改
+    """
     words = tokenize(content)
     for token in words:
-        threading.Thread(target=create_reverse_index, args=(connect, token, doc)).start()
-
+        threading.Thread(target=create_reverse_index, args=(r, token, doc)).start()

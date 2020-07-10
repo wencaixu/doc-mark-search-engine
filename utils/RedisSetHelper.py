@@ -1,29 +1,65 @@
 import uuid
 
-import redis
+from cache.RedisCache import Cache
+
+r = Cache().get_redis_cache(0)
 
 
 class RedisHelper:
+    """
+        Redis操作控制器
+    """
     @staticmethod
-    def set_common(connect, method, names, ttl=30):
+    def set_common(r, method, names, ttl=30):
+        """
+        公共调用函数
+        :param r: Redis连接
+        :param method: Redis命令方法
+        :param names: 文档中的关键字
+        :param ttl: 缓存清空时间
+        :return:
+        """
         uid = str(uuid.uuid4())
         ids = ['idx:' + name for name in names]
         for idx in ids:
-            getattr(connect, method)(uid, idx)
+            getattr(r, method)(uid, idx)
             # 设置过期时间
-            connect.expire(uid, ttl)
+            r.expire(uid, ttl)
         return uid
 
-    def union(self, connect, items, ttl, execute=True):
-        return self.set_common(connect, "sunionstore", items, ttl, execute)
+    def union(self, r, items, ttl):
+        """
+        计算集合并集
+        :param r: Redis连接
+        :param items: 查询的关键字组
+        :param ttl: 缓存清除时间
+        :return:
+        """
+        return self.set_common(r, "sunionstore", items, ttl)
 
-    def diff(self, connect, items, ttl, execute=True):
-        return self.set_common(connect, "sinterstore", items, ttl, execute)
+    def diff(self, r, items, ttl):
+        """
+        计算集合交集
+        :param r: Redis连接
+        :param items: 查询的关键字组
+        :param ttl: 缓存清除时间
+        :return:
+       """
+        return self.set_common(r, "sinterstore", items, ttl)
 
-    def intersect(self, connect, items, ttl, execute=True):
-        return self.set_common(connect, "sdiffstore", items, ttl, execute)
+    def intersect(self, r, items, ttl):
+        """
+        计算集合差集
+        :param r: Redis连接
+        :param items: 查询的关键字组
+        :param ttl: 缓存清除时间
+        :return:
+        """
+        return self.set_common(r, "sdiffstore", items, ttl)
 
 
 if __name__ == "__main__":
-    r = redis.Redis(host="", port=6379, password="aaa")
-    print(Help.set_common(r, 2, ["file", "name"], 4))
+    print(r.keys("*"))
+    uid1 = RedisHelper().diff(r, ["documents"], 30)
+    print(r.smembers(uid1))
+    pass
