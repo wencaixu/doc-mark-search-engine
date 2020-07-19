@@ -28,7 +28,7 @@ class Cache:
     __redisCache = redis.Redis(host=REDIS_HOST, port=MASTER_NODE_PORT, password=REDIS_PASSWORD)
 
     @classmethod
-    def get_redis_cache(cls, dbx):
+    def get_redis_cache(cls, dbx: object) -> object:
         if dbx == 0:
             return cls.__redisCache
         return cls.redis.Redis(host=REDIS_HOST, port=MASTER_NODE_PORT, password=REDIS_PASSWORD, db=dbx)
