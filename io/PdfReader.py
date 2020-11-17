@@ -12,7 +12,16 @@ importlib.reload(sys)
 
 
 class PDFReader:
+
+    def __init__(self):
+        print("构造函数")
+
+    """
+      PDF读取器
+    """
+
     def read(self):
+
         resource = PDFResourceManager()
         string_io = StringIO()
         la = LAParams()
@@ -22,6 +31,7 @@ class PDFReader:
 
         content = string_io.getvalue()
         string_io.close()
+
         return content
 
 
